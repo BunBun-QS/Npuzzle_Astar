@@ -1,21 +1,58 @@
-
-# First we write an elementary code and then we make it an advenced one
-
 # LET'S GET START
-
-
 
 #libraries
 import random
+import os
+
+
+#clear the page
+def clear():
+    if os.name == "nt":
+        os.system('cls')
+    else:
+        os.system('clear')
+        
+        
+#choose on of the predifined boards
+def predefined_puzzle():
+    clear()
+    define_puzzle=[([3,1,2,6,4,5,7,0,8], 3, 3), ([1,2,3,7,4,5,6,11,8,9,10,0,12,13,14,15], 4, 4),\
+                   ([5,1,2,3,4,10,6,7,8,9,11,12,13,14,19,15,16,17,18,0,20,21,22,23,24], 5, 5)]
+    puzzle=random.choice(define_puzzle)
+    return puzzle
 
 
 # First i must fegure out how to make a random game boared
 def make_game_board (size_ho,size_ve) :
+    clear()
     numbers=[x for x in range(size_ho* size_ve)] 
-    random.shuffle(numbers)
-    return numbers
+    while 1:
+        random.shuffle(numbers)
+        print("random puzzle is : ")
+        print_pretty(numbers,size_ho,size_ve)
+        answer=input("is that good?(remmeber hard puzzle takes a lot time!)(y or n)")
+        if answer.lower() == 'y':
+            return numbers
 
 
+# print our puzzle like a pezzle
+def print_pretty(puzzle,size_ho,size_ve):
+    for slash in range(size_ve):
+        print("___ ",end='')
+    print("")
+    for i in range(size_ho):
+        print("|",end='')
+        for j in range(size_ve):
+            state=(size_ve* i)+ j
+            if puzzle[state]<10:
+                print(" ",end='')
+            print("{}|".format(puzzle[state]),end='')
+        print("")
+        for slash in range(size_ve):
+            print("__",end='')
+        print("")
+    
+    
 # make goal board
 def make_goal_board(size_ho,size_ve):
     goal_board=[x for x in range(size_ho* size_ve)]
@@ -74,10 +111,9 @@ def move_oriented(board,size_ho,size_ve):
 def show_path(camefrom,size_ho,size_ve):
     i=1
     for step in camefrom:
-        print("{} :".format(i),end='')
+        print("***step {}***".format(i))
+        print_pretty(step,size_ho,size_ve)
         i+=1
-        print(step)
-        
 
 
 #A_star search alghorithm for founding new nodes until to the goal
@@ -163,18 +199,39 @@ def search(puzzle_b,goal_b,size_ho,size_ve):
     return False
         
         
-        
-    
 if __name__ == '__main__':
+
+    while 1 :
+        clear()
+        print("hey Welcom to the N_puzzle game.")
+        print("1- TRY RANDOM BOARD.")
+        print("2- TRY ONE OF MY PREDIFINED PUZZLES.",end='')
+        print("(they are easy to find and you can see the answer fast)")
+        print("(random puzzles might takes alot time).")
+        answer=input("please choose one: ")
+        
+        if answer== '1':
+            clear()
+            print("I need to give me the number of rows and columns.")
+            size_horizontal=int(input("ROWS:\t"))
+            size_vertical=int(input("COLUMNS:\t"))
+            puzzle_board=tuple(make_game_board(size_horizontal,size_vertical))
+            goal_board=tuple(make_goal_board(size_horizontal,size_vertical))
+            break
+                
+        elif answer== '2':
+            choose=predefined_puzzle()
+            puzzle_board, size_horizontal, size_vertical=choose
+            goal_board=tuple(make_goal_board(size_horizontal,size_vertical))
+            print("the puzzle boared is: ")
+            print_pretty(puzzle_board,size_horizontal,size_vertical)
+            break
+            
+        else:
+            continue
     
-    print("I need to give me the number of rows and columns.")
-    
-    size_horizontal=int(input("ROWS:\t"))
-    size_vertical=int(input("COLUMNS:\t"))
-    #puzzle_board=tuple(make_game_board(size_horizontal,size_vertical))
-    puzzle_board=(4,1,2,3,5,0,6,7,8,9,10,11,12,13,14,15)
-    goal_board=tuple(make_goal_board(size_horizontal,size_vertical))
-    path_to_goal=search(puzzle_board,goal_board,size_horizontal,size_vertical)
+
+    path_to_goal=search(tuple(puzzle_board),goal_board,size_horizontal,size_vertical)
     if path_to_goal == False:
         print('we couldent solve the puzzle!')
     else:
