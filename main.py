@@ -47,7 +47,7 @@ def make_game_board (size) :
 # print our puzzle like a pezzle
 def print_pretty(puzzle,size):
     for slash in range(size):
-        print("___ ",end='')
+        print("___",end='')
     print("")
     for i in range(size):
         print("|",end='')
@@ -58,7 +58,7 @@ def print_pretty(puzzle,size):
             print("{}|".format(puzzle[state]),end='')
         print("")
         for slash in range(size):
-            print("__",end='')
+            print("___",end='')
         print("")
     
     
